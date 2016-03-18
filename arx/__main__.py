@@ -9,7 +9,27 @@ from .logger import log
 
 
 def main():
+    logger.configure()
+    maybe_console()
     log.info('BEGIN arx;')
+
+
+def include():
+    """Inline local file URLs in an Arx file to produce a link-only file."""
+    pass
+
+
+def inline():
+    """Inline all URLs in an Arx file to produce a static file."""
+    pass
+
+
+def maybe_console():
+    if ['console'] == sys.argv[1:2]:
+        if ['-d'] == sys.argv[2:3]:
+            logger.configure(level='debug')
+        console()
+        sys.exit(0)
 
 
 def console():
@@ -29,7 +49,7 @@ def console():
         sys.path.insert(0, '')
 
     ptpython.repl.enable_deprecation_warnings()
-    # Load module as though user had run ``import arx``, and add the logger.
+    # Load module as though user had run ``import arx`` and add the logger.
     ptpython.repl.embed(locals=dict(arx=sys.modules['arx'], log=log),
                         history_filename=history,
                         configure=configure)
@@ -37,11 +57,4 @@ def console():
 
 
 if __name__ == '__main__':
-    logger.configure()
-    if '--repl' in sys.argv:
-        if len(sys.argv) == 2:
-            console()
-        if '-d' in sys.argv and len(sys.argv) == 3:
-            logger.configure(level='debug')
-            console()
     main()
