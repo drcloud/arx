@@ -17,54 +17,57 @@ class Source(object):
     def run(self, cache, args=[]):
         raise NotImplementedError()
 
-
-class Sigs(object):
-    """Decorators for argument conversion."""
-    init = signature((uritools.SplitResult, uritools.split))
-    cache = signature(py.path.local, py.path.local)
-    place = signature(py.path.local)
-    run = signature(py.path.local)
+    def inline(self):
+        return self
 
 
-sigs = Sigs()
+"""Convert the first argument to a URL."""
+oneurl = signature((uritools.SplitResult, uritools.split))
+"""Convert the first argument to a parsed path."""
+onepath = signature(py.path.local)
+"""Convert the first two arguments to parsed paths."""
+twopaths = signature(py.path.local, py.path.local)
 
 
 class HTTP(Source):
-    @sigs.init
+    @oneurl
     def __init__(self, url):
         self.url = url
         if url.fragment is not None:
             raise Invalid('Arx can not work with plain HTTP/S URLs that have '
                           'fragments.')
 
-    @sigs.cache
+    @onepath
     def cache(self, cache):
-        headers, body = cache.join('headers'), cache.join('body')
+        headers, body = cache.join('headers'), self.data(cache)
         curl('-sSfL', uritools.uriunsplit(self.url),
              '-D', str(headers), '-o', str(body))
 
-    @sigs.place
+    @twopaths
     def place(self, cache, path):
-        body = cache.join('body')
         mkdir('-p', path.dirname)
-        cp(str(body), str(path))
+        cp(str(self.data(cache)), str(path))
 
-    @sigs.run
+    @onepath
     def run(self, cache, args=[]):
-        body = cache.join('body')
+        body = self.data(cache)
         chmod('a+rx', str(body))
         cmd = Command(str(body))
         cmd(*args)
 
+    @onepath
+    def data(self, cache):
+        return cache.join('data')
 
-class HTTPTar(Source):
-    @sigs.init
+
+class HTTPTar(HTTP):
+    @oneurl
     def __init__(self, url):
         self.url = url
 
-    @sigs.place
+    @twopaths
     def place(self, cache, path):
-        body = cache.join('body')
+        data = self.data(cache)
         opts = []
 
         if self.url.fragment is not None:
@@ -76,11 +79,11 @@ class HTTPTar(Source):
 
         mkdir('-p', path.dirname)
         if self.url.fragment is None or self.url.fragment.endswith('/'):
-            tar('-xf', str(body), '-C', str(path), *opts)
+            tar('-xf', str(data), '-C', str(path), *opts)
         else:
-            tar('-xf', str(body), '--to-stdout', *opts, _out=str(path))
+            tar('-xf', str(data), '--to-stdout', *opts, _out=str(path))
 
-    @sigs.run
+    @onepath
     def run(self, cache, args=[]):
         program = cache.join('program')
         if self.url.fragment is None:
@@ -90,6 +93,27 @@ class HTTPTar(Source):
         chmod('a+rx', str(program))
         cmd = Command(str(program))
         cmd(*args)
+
+    @onepath
+    def data(self, cache):
+        return cache.join('data.tar')
+
+
+class HTTPJar(Source):
+    @oneurl
+    def __init__(self, url):
+        self.url = url
+        if url.fragment is not None:
+            raise Invalid('Arx can not handle Jar HTTP/S URLs with fragments.')
+
+    @onepath
+    def run(self, cache, args=[]):
+        cmd = Command('java')
+        cmd('-jar', str(self.data(cache)), *args)
+
+    @onepath
+    def data(self, cache):
+        return cache.join('data.jar')
 
 
 class Invalid(Err):
