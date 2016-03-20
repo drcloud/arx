@@ -2,7 +2,7 @@ import py.path
 import uritools
 
 from ..inner.uritools import uridisplay
-from ..signature import signature
+from ..decorators import signature
 
 
 class Source(object):
