@@ -2,6 +2,10 @@ from functools import wraps
 
 
 def signature(*types, **kwtypes):
+    """Type annotations and conversions for methods.
+
+    Ignores first parameter.
+    """
     conversions = [(t if isinstance(t, tuple) else (t, t)) for t in types]
     kwconversions = {k: (t if isinstance(t, tuple) else (t, t))
                      for k, t in kwtypes.items()}
