@@ -5,9 +5,9 @@
 .. image:: https://travis-ci.org/drcloud/arx.svg?branch=master
     :target: https://travis-ci.org/drcloud/arx
 
-`Arx` captures a pattern that cuts across Dockerfiles, Travis CI setups, the
-"curl pipe to shell" craze and many other execution environments: using URLs
-and source code references to specify a task to run.
+`Arx` captures a pattern common to Dockerfiles, CI setups, the
+`curl ... | sh` craze and many other execution environments: using URLs
+and source code references to specify a runnable task.
 
 To `Arx`, a task comprises ``code`` and ``data``, each of which can reference
 URLs -- tarballs in S3, Git repositories or even files local to your
