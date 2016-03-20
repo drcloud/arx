@@ -16,6 +16,14 @@ class Source(object):
     def run(self, cache, args=[]):
         raise NotImplementedError()
 
+    def inline(self):
+        """Returns None to indicate no inlining is needed."""
+        return None
+
+    def sign(self):
+        """Returns None to indicate no signing is needed."""
+        return None
+
     def __str__(self):
         return uridisplay(self.url)
 

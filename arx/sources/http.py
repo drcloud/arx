@@ -1,9 +1,11 @@
-from sh import Command, chmod, cp, curl, mkdir, tar
+from sh import Command, chmod, cp, curl, mkdir
 import uritools
 
 from ..err import Err
-from ..schemes import schemes
+from .jar import Jar
+from ..decorators import schemes
 from . import onepath, oneurl, Source, twopaths
+from .tar import Tar
 
 
 class HTTP(Source):
@@ -42,62 +44,20 @@ class HTTP(Source):
         return cache.join('data')
 
 
-class HTTPTar(HTTP):
+class HTTPTar(Tar, HTTP):
     @oneurl
     @schemes('tar+http', 'tar+https')
     def __init__(self, url):
         self.url = url
 
-    @twopaths
-    def place(self, cache, path):
-        data = self.data(cache)
-        opts = []
 
-        if self.url.fragment is not None:
-            slashes = self.url.fragment.count('/')
-            n = slashes - 1 if self.url.fragment.endswith('/') else slashes
-            if n > 0:
-                opts += ['--strip-components', str(n)]
-            opts += ['--', self.url.fragment]
-
-        mkdir('-p', path.dirname)
-        if self.url.fragment is None or self.url.fragment.endswith('/'):
-            tar('-xf', str(data), '-C', str(path), *opts)
-        else:
-            tar('-xf', str(data), '--to-stdout', *opts, _out=str(path))
-
-    @onepath
-    def run(self, cache, args=[]):
-        program = cache.join('program')
-        if self.url.fragment is None:
-            raise Invalid('Arx can not execute HTTP/S tarball URLs that have '
-                          'no fragment.')
-        self.place(cache, program)
-        chmod('a+rx', str(program))
-        cmd = Command(str(program))
-        cmd(*args)
-
-    @onepath
-    def data(self, cache):
-        return cache.join('data.tar')
-
-
-class HTTPJar(Source):
+class HTTPJar(Jar, HTTP):
     @oneurl
     @schemes('jar+http', 'jar+https')
     def __init__(self, url):
         self.url = url
         if url.fragment is not None:
             raise Invalid('Arx can not handle Jar HTTP/S URLs with fragments.')
-
-    @onepath
-    def run(self, cache, args=[]):
-        cmd = Command('java')
-        cmd('-jar', str(self.data(cache)), *args)
-
-    @onepath
-    def data(self, cache):
-        return cache.join('data.jar')
 
 
 class Invalid(Err):
