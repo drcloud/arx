@@ -16,8 +16,8 @@ def schemes(*schemes):
         @wraps(fn)
         def wrapped(self, url, *args, **kwargs):
             if url.scheme not in schemes:
-                raise InvalidScheme(msg % (fn.im_class.__name__,
-                                           ' '.join(schemes),
+                raise InvalidScheme(msg % (type(self).__name__,
+                                           ', '.join(schemes),
                                            str(url.scheme)))
             return fn(self, url, *args, **kwargs)
 
