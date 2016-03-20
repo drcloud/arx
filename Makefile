@@ -7,3 +7,6 @@ check: flake8
 
 flake8:
 	flake8 arx setup.py
+
+readmewatch:
+	 restview --pypi-strict README.rst
