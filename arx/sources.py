@@ -4,6 +4,8 @@ import uritools
 
 from .err import Err
 from .signature import signature
+from .schemes import schemes
+from .inner.uritools import uridisplay
 
 
 class Source(object):
@@ -17,12 +19,12 @@ class Source(object):
     def run(self, cache, args=[]):
         raise NotImplementedError()
 
-    def inline(self):
-        return self
+    def __str__(self):
+        return uridisplay(self.url)
 
 
 """Convert the first argument to a URL."""
-oneurl = signature((uritools.SplitResult, uritools.split))
+oneurl = signature((uritools.SplitResult, uritools.urisplit))
 """Convert the first argument to a parsed path."""
 onepath = signature(py.path.local)
 """Convert the first two arguments to parsed paths."""
@@ -31,6 +33,7 @@ twopaths = signature(py.path.local, py.path.local)
 
 class HTTP(Source):
     @oneurl
+    @schemes('http', 'https')
     def __init__(self, url):
         self.url = url
         if url.fragment is not None:
@@ -40,7 +43,10 @@ class HTTP(Source):
     @onepath
     def cache(self, cache):
         headers, body = cache.join('headers'), self.data(cache)
-        curl('-sSfL', uritools.uriunsplit(self.url),
+        # Allows subclasses, below, to inherit this implementation.
+        scheme = self.self.url.scheme.split('+')[-1]
+        simplified_url = self.url._replace(scheme=scheme, fragment=None)
+        curl('-sSfL', uritools.uriunsplit(simplified_url),
              '-D', str(headers), '-o', str(body))
 
     @twopaths
@@ -62,6 +68,7 @@ class HTTP(Source):
 
 class HTTPTar(HTTP):
     @oneurl
+    @schemes('tar+http', 'tar+https')
     def __init__(self, url):
         self.url = url
 
@@ -101,6 +108,7 @@ class HTTPTar(HTTP):
 
 class HTTPJar(Source):
     @oneurl
+    @schemes('jar+http', 'jar+https')
     def __init__(self, url):
         self.url = url
         if url.fragment is not None:
