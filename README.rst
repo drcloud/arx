@@ -6,7 +6,7 @@
     :target: https://travis-ci.org/drcloud/arx
 
 `Arx` captures a pattern common to Dockerfiles, CI setups, the
-`curl ... | sh` craze and many other execution environments: using URLs
+``curl ... | sh`` craze and many other execution environments: using URLs
 and source code references to specify a runnable task.
 
 To `Arx`, a task comprises ``code`` and ``data``, each of which can reference
