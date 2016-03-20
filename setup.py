@@ -32,7 +32,8 @@ def version():
 
 conf = dict(name='arx',
             version=version(),
-            install_requires=['boto3',
+            install_requires=['awscli',
+                              'boto3',
                               'click',
                               'enum34',
                               'ptpython',
