@@ -4,11 +4,11 @@ import uritools
 from ..err import Err
 from .jar import Jar
 from ..decorators import schemes
-from . import onepath, oneurl, Source, twopaths
+from . import onepath, oneurl, SourceURL, twopaths
 from .tar import Tar
 
 
-class HTTP(Source):
+class HTTP(SourceURL):
     @oneurl
     @schemes('http', 'https')
     def __init__(self, url):

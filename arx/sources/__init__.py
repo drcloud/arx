@@ -24,8 +24,13 @@ class Source(object):
         """Returns None to indicate no signing is needed."""
         return None
 
+
+class SourceURL(Source):
     def __str__(self):
         return uridisplay(self.url)
+
+    def __getattr__(self, name):
+        return getattr(self.url, name)
 
 
 """Convert the first argument to a URL."""
