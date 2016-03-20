@@ -2,6 +2,9 @@
 ``arx``
 =======
 
+.. image:: https://travis-ci.org/drcloud/arx.svg?branch=master
+    :target: https://travis-ci.org/drcloud/arx
+
 `Arx` captures a pattern that cuts across Dockerfiles, Travis CI setups, the
 "curl pipe to shell" craze and many other execution environments: using URLs
 and source code references to specify a task to run.
