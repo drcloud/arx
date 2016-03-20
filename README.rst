@@ -18,7 +18,7 @@ published to Redis or S3.
 Arx Concepts
 ------------
 
-* Arg organizes a task into ``code`` and ``data``.
+* `Arx` organizes a task into ``code`` and ``data``.
 
 * Both ``code`` and ``data`` can reference `Source`\s.
 
