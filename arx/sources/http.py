@@ -1,34 +1,9 @@
 from sh import Command, chmod, cp, curl, mkdir, tar
-import py.path
 import uritools
 
-from .err import Err
-from .signature import signature
-from .schemes import schemes
-from .inner.uritools import uridisplay
-
-
-class Source(object):
-    """ABC for sources."""
-    def cache(self, cache):
-        raise NotImplementedError()
-
-    def place(self, cache, path):
-        raise NotImplementedError()
-
-    def run(self, cache, args=[]):
-        raise NotImplementedError()
-
-    def __str__(self):
-        return uridisplay(self.url)
-
-
-"""Convert the first argument to a URL."""
-oneurl = signature((uritools.SplitResult, uritools.urisplit))
-"""Convert the first argument to a parsed path."""
-onepath = signature(py.path.local)
-"""Convert the first two arguments to parsed paths."""
-twopaths = signature(py.path.local, py.path.local)
+from ..err import Err
+from ..schemes import schemes
+from . import onepath, oneurl, Source, twopaths
 
 
 class HTTP(Source):
@@ -43,7 +18,8 @@ class HTTP(Source):
     @onepath
     def cache(self, cache):
         headers, body = cache.join('headers'), self.data(cache)
-        # Allows subclasses, below, to inherit this implementation.
+        # Allows subclasses to inherit this implementation by throwing away the
+        # prefix.
         scheme = self.self.url.scheme.split('+')[-1]
         simplified_url = self.url._replace(scheme=scheme, fragment=None)
         curl('-sSfL', uritools.uriunsplit(simplified_url),
