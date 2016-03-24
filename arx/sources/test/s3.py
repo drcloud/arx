@@ -1,6 +1,7 @@
 import pytest
 
 from ...decorators import InvalidScheme
+from ..http import HTTP, HTTPJar, HTTPTar
 from ..s3 import S3, S3Jar, S3Tar, Invalid
 
 
@@ -9,6 +10,8 @@ def test_http():
     assert src.authority == 'bucket'
     assert src.path == '/key'
     assert src.fragment is None
+
+    assert isinstance(src.sign(), HTTP)
 
     with pytest.raises(Invalid):
         src = S3('s3://bucket/key#pieces')
@@ -26,6 +29,8 @@ def test_tar():
     assert src.authority == 'bucket'
     assert src.path == '/key.tbz'
 
+    assert isinstance(src.sign(), HTTPTar)
+
     with pytest.raises(InvalidScheme):
         src = S3Tar('https://aol.com/aol.tgz')
 
@@ -36,6 +41,8 @@ def test_jar():
     assert src.authority == 'bucket'
     assert src.path == '/key.jar'
     assert src.fragment is None
+
+    assert isinstance(src.sign(), HTTPJar)
 
     with pytest.raises(Invalid):
         S3Jar('jar+s3://bucket/key.jar#web.xml')

@@ -79,7 +79,7 @@ class S3Tar(Tar, S3):
                           'S3 paths like tarballs.')
 
     def sign(self):
-        return HTTPTar(self.signed_get())
+        return HTTPTar('tar+' + self.signed_get())
 
 
 class S3Jar(Jar, S3):
@@ -94,7 +94,7 @@ class S3Jar(Jar, S3):
                           'S3 paths like Jars.')
 
     def sign(self):
-        return HTTPJar(self.signed_get())
+        return HTTPJar('jar+' + self.signed_get())
 
 
 class Invalid(Err):
