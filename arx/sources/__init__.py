@@ -16,13 +16,12 @@ class Source(object):
     def run(self, cache, args=[]):
         raise NotImplementedError()
 
-    def inline(self):
-        """Returns None to indicate no inlining is needed."""
-        return None
 
-    def sign(self):
-        """Returns None to indicate no signing is needed."""
-        return None
+class DiskLocal(Source):
+    """Sources that are on local disk."""
+    def delocalize(self):
+        """Returns a new, non-local ``Source``."""
+        raise NotImplementedError()
 
 
 class SourceURL(Source):
@@ -31,6 +30,14 @@ class SourceURL(Source):
 
     def __getattr__(self, name):
         return getattr(self.url, name)
+
+
+class SignableURL(SourceURL):
+    """URLs that can be signed to allow privileged access without granting
+       credentials. For example, signing S3 URLs to get HTTP URLs."""
+    def sign(self):
+        """Returns a new signed ``Source``."""
+        raise NotImplementedError()
 
 
 """Convert the first argument to a URL."""

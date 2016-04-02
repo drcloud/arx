@@ -6,11 +6,11 @@ from ..err import Err
 from .http import HTTP, HTTPTar, HTTPJar
 from .jar import Jar
 from ..decorators import schemes
-from . import onepath, oneurl, SourceURL, twopaths
+from . import onepath, oneurl, SignableURL, twopaths
 from .tar import Tar
 
 
-class S3(SourceURL):
+class S3(SignableURL):
     @oneurl
     @schemes('s3')
     def __init__(self, url):
