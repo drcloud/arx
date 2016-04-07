@@ -4,12 +4,11 @@ import sys
 
 import ptpython.repl
 
-from . import logger
-from .logger import log
+from magiclog import log
 
 
 def main():
-    logger.configure()
+    log.configure()
     maybe_console()
     log.info('BEGIN arx;')
 
@@ -27,7 +26,7 @@ def inline():
 def maybe_console():
     if ['console'] == sys.argv[1:2]:
         if ['-d'] == sys.argv[2:3]:
-            logger.configure(level='debug')
+            log.configure(level='debug')
         console()
         sys.exit(0)
 
