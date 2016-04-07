@@ -9,12 +9,14 @@
 ``curl ... | sh`` craze and many other execution environments: using URLs
 and source code references to specify a runnable task.
 
-To `Arx`, a task comprises ``code`` and ``data``, each of which can reference
-URLs -- tarballs in S3, Git repositories or even files local to your
-development machine. A simple and extensible Python library, `Arx` supports
-task specification with YAML or JSON or via an object-oriented API. `Arx` is
-indifferent to transports but provides utilities for working with tasks
-published to Redis or S3.
+Inspired by Canonical's Cloud Config, `Arx` models a task as a collection of
+URLs and a list of commands to run. URLs can specify both data files and the
+source of commands. `Arx` supports a variety of URL schemes -- ``http``,
+``git``, ``s3`` -- as well as inline data, local file references and "composed"
+URL schemes like ``tar+https``. A simple and extensible Python library, `Arx`
+supports task specification with YAML or JSON or via an object-oriented API.
+`Arx` is indifferent to transports but provides utilities for working with
+tasks published to Redis or S3.
 
 
 ------------
