@@ -1,3 +1,4 @@
+from base64 import b64decode
 from collections import Container, Mapping, OrderedDict, Sequence
 import math
 
@@ -39,6 +40,10 @@ class InlineBinary(Inline):
     @signature(bytes)
     def __init__(self, data):
         self.data = data
+
+    @classmethod
+    def base64(cls, text):
+        return cls(b64decode(text))
 
     @twopaths
     def place(self, cache, path):
@@ -131,4 +136,3 @@ class NoExecutingCollections(Err):
 
 class NoExecutingInlineTars(Err):
     pass
-
