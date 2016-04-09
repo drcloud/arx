@@ -3,6 +3,7 @@ import os
 import sys
 
 import ptpython.repl
+import six
 
 from magiclog import log
 
@@ -39,7 +40,7 @@ def console():
     def configure(repl):
         path = os.path.join(config_dir, 'config.py')
         if os.path.exists(path):
-            ptpython.repl.run_config(repl, unicode(path))
+            ptpython.repl.run_config(repl, six.u(path))
 
     if not os.path.isdir(config_dir):          # Ensure config directory exists
         os.mkdir(config_dir)

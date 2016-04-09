@@ -1,6 +1,6 @@
 from functools import wraps
 
-from err import Err
+from .err import Err
 
 
 def signature(*types, **kwtypes):
@@ -17,7 +17,7 @@ def signature(*types, **kwtypes):
         def wrapped(self, *args, **kwargs):
             args = [(arg if isinstance(arg, t) else conv(arg))
                     for (t, conv), arg in zip(conversions, args)]
-            kwargs = {k: (arg if isinstance(arg, t) else conv(arg))
+            kwargs = {k: (v if isinstance(v, t) else conv(v))
                       for k, (t, conv), v
                       in ((k, kwconversions[k], v)
                           for k, v in kwargs.items())}

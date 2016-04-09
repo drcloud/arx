@@ -1,14 +1,16 @@
 import base64
 
+import six
+
 from ..inline import InlineBinary, InlineTarGZ
 
 
 def test_b64():
     text, encoded = ('a string', 'YSBzdHJpbmc=')
-    assert base64.b64encode(text) == encoded
+    assert base64.b64encode(six.b(text)) == six.b(encoded)
     source = InlineBinary.base64(encoded)
     assert isinstance(source, InlineBinary)
-    assert text == source.data
+    assert six.b(text) == source.data
 
 
 def test_b64_targz():

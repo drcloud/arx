@@ -17,7 +17,7 @@ class Inline(Source):
 
 
 class InlineText(Inline):
-    @signature(unicode)
+    @signature(str)
     def __init__(self, text):
         self.text = text
 
