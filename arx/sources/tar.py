@@ -1,7 +1,7 @@
 from sh import chmod, Command, mkdir, tar
 
 from ..err import Err
-from . import twopaths, onepath
+from .core import twopaths, onepath
 
 
 class Tar(object):
@@ -27,7 +27,7 @@ class Tar(object):
     def run(self, cache, args=[]):
         program = cache.join('program')
         if self.url.fragment is None:
-            raise Invalid('Arx can not execute tarball URLs that have no'
+            raise Invalid('Arx can not execute tarball URLs that have no '
                           'fragment.')
         self.place(cache, program)
         chmod('a+rx', str(program))

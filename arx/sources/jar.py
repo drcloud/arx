@@ -1,6 +1,6 @@
 from sh import Command
 
-from . import onepath
+from .core import onepath
 
 
 class Jar(object):

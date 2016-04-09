@@ -2,11 +2,11 @@ import boto3
 from sh import Command, chmod, cp, mkdir, rsync
 import uritools
 
+from ..decorators import schemes
 from ..err import Err
 from .http import HTTP, HTTPTar, HTTPJar
 from .jar import Jar
-from ..decorators import schemes
-from . import onepath, oneurl, SignableURL, twopaths
+from .core import onepath, oneurl, SignableURL, twopaths
 from .tar import Tar
 
 

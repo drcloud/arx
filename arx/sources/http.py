@@ -1,10 +1,10 @@
 from sh import Command, chmod, cp, curl, mkdir
 import uritools
 
+from ..decorators import schemes
 from ..err import Err
 from .jar import Jar
-from ..decorators import schemes
-from . import onepath, oneurl, SourceURL, twopaths
+from .core import onepath, oneurl, SourceURL, twopaths
 from .tar import Tar
 
 

@@ -3,9 +3,9 @@ import math
 
 from sh import chmod, Command, mkdir, tar
 
-from ..err import Err
 from ..decorators import signature
-from . import onepath, Source, twopaths
+from ..err import Err
+from .core import onepath, Source, twopaths
 
 
 class Inline(Source):
