@@ -28,6 +28,9 @@ class SourceURL(Source):
     def __str__(self):
         return uridisplay(self.url)
 
+    def __repr__(self):
+        return '%s(%r)' % (type(self).__name__, str(self))
+
     def __getattr__(self, name):
         return getattr(self.url, name)
 

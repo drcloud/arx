@@ -3,6 +3,7 @@ from collections import Container, Mapping, OrderedDict, Sequence
 import math
 
 from sh import chmod, Command, mkdir, tar
+import six
 
 from ..decorators import signature
 from ..err import Err
@@ -35,6 +36,9 @@ class InlineText(Inline):
         cmd = Command(str(f))
         cmd(*args)
 
+    def __repr__(self):
+        return '%s(%r)' % (type(self).__name__, clip(self.text[:20]))
+
 
 class InlineBinary(Inline):
     @signature(bytes)
@@ -58,6 +62,10 @@ class InlineBinary(Inline):
         chmod('a+rx', str(f))
         cmd = Command(str(f))
         cmd(*args)
+
+    def __repr__(self):
+        return '%s(%r)' % (type(self).__name__,
+                           clip(self.data[:20], ellipsis=six.b('...')))
 
 
 class InlineTarGZ(InlineBinary):
@@ -136,3 +144,7 @@ class NoExecutingCollections(Err):
 
 class NoExecutingInlineTars(Err):
     pass
+
+
+def clip(something, ellipsis='...', n=20):
+    return something if len(something) <= n else something[:n] + ellipsis
