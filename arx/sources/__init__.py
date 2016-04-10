@@ -7,6 +7,7 @@ import uritools
 
 from ..err import Err
 from ..inner.uritools import uridisplay
+from .core import DiskLocal, SignableURL, Source, SourceURL
 from .http import HTTP, HTTPJar, HTTPTar
 from .inline import InlineBinary, InlineJar, InlineTarGZ, InlineText
 from .s3 import S3, S3Jar, S3Tar
@@ -18,6 +19,9 @@ class Interpreter(object):
         self.data_handlers = data_handlers
 
     def __call__(self, source):
+        if isinstance(source, (Source, SourceURL, SignableURL, DiskLocal)):
+            log.debug('Not reinterpreting source: %r', source)
+            return source
         if isinstance(source, Mapping):
             log.debug('Treating as map: %s', source)
             if len(source) != 1:

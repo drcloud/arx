@@ -1,0 +1,6 @@
+code:
+  - ls
+  - [echo, x]
+data:
+  - 'tar+s3://drcloud.io/arx/example.tar'
+  - 'http://google.com': google-download

@@ -1,0 +1,13 @@
+label: main
+code:
+  - cmd: ls
+    label: ls
+  - cmd: echo
+    args: [x]
+    label: echo
+data:
+  - source: 'tar+s3://drcloud.io/arx/example.tar'
+    label: s3
+  - source: http://google.com
+    target: google-download
+    label: google

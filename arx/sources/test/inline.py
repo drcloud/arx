@@ -7,7 +7,7 @@ from ..inline import InlineBinary, InlineTarGZ
 
 def test_b64():
     text, encoded = ('a string', 'YSBzdHJpbmc=')
-    assert base64.b64encode(six.b(text)) == six.b(encoded)
+    assert base64.b64encode(six.b(text)).decode() == encoded
     source = InlineBinary.base64(encoded)
     assert isinstance(source, InlineBinary)
     assert six.b(text) == source.data

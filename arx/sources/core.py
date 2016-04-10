@@ -16,6 +16,9 @@ class Source(object):
     def run(self, cache, args=[]):
         raise NotImplementedError()
 
+    def externalize(self):
+        raise NotImplementedError()
+
 
 class DiskLocal(Source):
     """Sources that are on local disk."""
@@ -33,6 +36,9 @@ class SourceURL(Source):
 
     def __getattr__(self, name):
         return getattr(self.url, name)
+
+    def externalize(self):
+        return uritools.uriunsplit(self.url)
 
 
 class SignableURL(SourceURL):

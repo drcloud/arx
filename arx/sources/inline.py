@@ -1,4 +1,4 @@
-from base64 import b64decode
+from base64 import b64decode, b64encode
 from collections import Container, Mapping, OrderedDict, Sequence
 import math
 
@@ -36,6 +36,9 @@ class InlineText(Inline):
         cmd = Command(str(f))
         cmd(*args)
 
+    def externalize(self):
+        return dict(text=self.text)
+
     def __repr__(self):
         return '%s(%r)' % (type(self).__name__, clip(self.text[:20]))
 
@@ -63,6 +66,11 @@ class InlineBinary(Inline):
         cmd = Command(str(f))
         cmd(*args)
 
+    def externalize(self):
+        lines = break_up_base64(b64encode(self.data))
+        para = '\n'.join(b.decode() for b in lines)
+        return dict(base64=para)
+
     def __repr__(self):
         return '%s(%r)' % (type(self).__name__,
                            clip(self.data[:20], ellipsis=six.b('...')))
@@ -80,6 +88,10 @@ class InlineTarGZ(InlineBinary):
         with open(str(path), 'w') as h:
             h.write(self.data)
 
+    def externalize(self):
+        para = super(InlineTarGZ, self).externalize()['base64']
+        return dict(tgz64=para)
+
 
 class InlineJar(InlineBinary):
     @onepath
@@ -88,6 +100,10 @@ class InlineJar(InlineBinary):
         self.place(cache, jar)
         cmd = Command('java')
         cmd('-jar', str(jar), *args)
+
+    def externalize(self):
+        para = super(InlineJar, self).externalize()['base64']
+        return dict(jar64=para)
 
 
 class InlineCollection(Inline):
@@ -148,3 +164,9 @@ class NoExecutingInlineTars(Err):
 
 def clip(something, ellipsis='...', n=20):
     return something if len(something) <= n else something[:n] + ellipsis
+
+
+def break_up_base64(data, n=64):
+    while len(data) > 0:
+        yield data[:n]
+        data = data[n:]
