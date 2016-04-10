@@ -2,7 +2,7 @@ import pkg_resources
 
 import yaml
 
-from ..manifest import Task
+from ..task import Task
 
 
 def test_basic():

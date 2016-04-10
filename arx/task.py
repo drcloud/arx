@@ -20,10 +20,7 @@ class SourceType(BaseType):
         return value.externalize()
 
 
-class Code(Model):
-    source = SourceType()
-    cmd = ListType(StringType())
-    args = ListType(StringType())
+class Runnable(Model):
     cwd = StringType()
     env = DictType(StringType())
     label = StringType()
@@ -32,14 +29,15 @@ class Code(Model):
             serialize_when_none = False
 
 
-class Data(Model):
+class Code(Runnable):
+    source = SourceType()
+    cmd = ListType(StringType())
+    args = ListType(StringType())
+
+
+class Data(Runnable):
     source = SourceType(required=True)
     target = StringType()
-    label = StringType()
-    env = DictType(StringType())
-
-    class Options:
-            serialize_when_none = False
 
 
 class IdiomaticCodeModelType(BaseType):
@@ -63,9 +61,10 @@ class IdiomaticCodeModelType(BaseType):
 
     def to_primitive(self, value, context=None):
         prim = value.to_primitive()
-        if all([set(prim.keys()) < set(['source', 'cmd']),
-                len(prim.get('cmd', [])) <= 1]):           # Simplify to string
-            return prim.get('source') or prim.get('cmd')[0]
+        if set(prim.keys()) == set(['source']):
+            return prim['source']                          # Simplify to string
+        if set(prim.keys()) == set(['cmd']) and len(prim['cmd']) == 1:
+            return prim['cmd'][0]                          # Simplify to string
         if set(prim.keys()) < set(['source', 'cmd', 'args']):
             cmd = [prim['source']] if 'source' in prim else prim['cmd']
             return cmd + prim['args']                       # Simplify to array
@@ -97,12 +96,6 @@ class IdiomaticDataModelType(BaseType):
         return prim
 
 
-class Task(Model):
+class Task(Runnable):
     code = ListType(IdiomaticCodeModelType())
     data = ListType(IdiomaticDataModelType())
-    cwd = StringType()
-    env = DictType(StringType())
-    label = StringType()
-
-    class Options:
-            serialize_when_none = False
