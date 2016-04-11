@@ -2,30 +2,35 @@
 import os
 import sys
 
+import click
+from magiclog import log
 import ptpython.repl
 import six
+import yaml
 
-from magiclog import log
+from .task import Task
 
 
 def main():
     log.configure()
     maybe_console()
-    log.info('BEGIN arx;')
+    interpret()
 
 
-def include():
-    """Inline local file URLs in an Arx file to produce a link-only file."""
-    pass
-
-
-def inline():
-    """Inline all URLs in an Arx file to produce a static file."""
-    pass
+@click.command()
+@click.argument('input', type=click.File('rb'))
+@click.option('--debug/--no-debug', default=False)
+def interpret(input, debug=False):
+    """Downloads data and runs commands as per the Arx file."""
+    if debug:
+        log.configure(level='debug')
+    data = yaml.load(input.read())
+    task = Task(data)
+    task.run()
 
 
 def maybe_console():
-    if ['console'] == sys.argv[1:2]:
+    if ['//console'] == sys.argv[1:2]:
         if ['-d'] == sys.argv[2:3]:
             log.configure(level='debug')
         console()

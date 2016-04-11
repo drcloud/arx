@@ -1,12 +1,18 @@
 from collections import Mapping, Sequence
+import os
+import sys
 
+from magiclog import log
 from schematics.exceptions import ConversionError
 from schematics.types import BaseType, StringType
 from schematics.types.compound import DictType, ListType
 from schematics.models import Model
+import sh
 import six
 
 from .sources import interpret
+from .util.runnable import run, Runnable
+from .util.tmp import tmpdir
 
 
 class SourceType(BaseType):
@@ -20,24 +26,42 @@ class SourceType(BaseType):
         return value.externalize()
 
 
-class Runnable(Model):
+class RunnableModel(Model, Runnable):
     cwd = StringType()
     env = DictType(StringType())
-    label = StringType()
 
     class Options:
             serialize_when_none = False
 
 
-class Code(Runnable):
+class Code(RunnableModel):
     source = SourceType()
     cmd = ListType(StringType())
     args = ListType(StringType())
 
+    def run(self):
+        if self.source is not None:
+            with tmpdir() as cache:
+                log.debug('Running: %s', self.source)
+                self.source.cache(cache)
+                self.source.run(cache, (self.args or []))
+        else:
+            cmd = sh.Command(self.cmd[0])
+            log.debug('Running: %s', cmd)
+            cmd(*(self.cmd[1:] + (self.args or [])),
+                _out=sys.stdout, _err=sys.stderr)
 
-class Data(Runnable):
+
+class Data(RunnableModel):
     source = SourceType(required=True)
     target = StringType()
+
+    def run(self):
+        log.debug('Unpacking: %s', self.source)
+        with tmpdir() as cache:
+            target = self.target or os.getcwd()
+            self.source.cache(cache)
+            self.source.place(cache, target)
 
 
 class IdiomaticCodeModelType(BaseType):
@@ -96,6 +120,12 @@ class IdiomaticDataModelType(BaseType):
         return prim
 
 
-class Task(Runnable):
+class Task(RunnableModel):
     code = ListType(IdiomaticCodeModelType())
     data = ListType(IdiomaticDataModelType())
+
+    def run(self):
+        for data in self.data:
+            run(data)
+        for code in self.code:
+            run(code)

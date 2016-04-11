@@ -14,8 +14,8 @@ def test_basic():
     assert len(task.to_primitive()) > 0
 
 
-def test_labeled():
-    text = pkg_resources.resource_string(__package__, 'labeled.yaml')
+def test_expanded():
+    text = pkg_resources.resource_string(__package__, 'expanded.yaml')
     data = yaml.load(text)
     task = Task(data)
     assert len(task.code) == 2

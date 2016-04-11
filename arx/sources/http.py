@@ -22,7 +22,7 @@ class HTTP(SourceURL):
         headers, body = cache.join('headers'), self.data(cache)
         # Allows subclasses to inherit this implementation by throwing away the
         # prefix.
-        scheme = self.self.url.scheme.split('+')[-1]
+        scheme = self.url.scheme.split('+')[-1]
         simplified_url = self.url._replace(scheme=scheme, fragment=None)
         curl('-sSfL', uritools.uriunsplit(simplified_url),
              '-D', str(headers), '-o', str(body))
