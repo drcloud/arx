@@ -61,6 +61,22 @@ Arx Concepts
   of files.
 
 
+----------
+Object API
+----------
+
+.. code:: python
+
+    from arx import Code, Data, Source, Task
+
+    brew = 'https://raw.githubusercontent.com/Homebrew/install/master/install'
+    task = Task()
+    task.code += Code('wc', '-l', 'brew.rb')
+    task.code += Code('stat', '-x', 'brew.rb')
+    task.data += Data(Source(brew), 'brew.rb')
+    task.run()
+
+
 ------------------
 More About Sources
 ------------------
