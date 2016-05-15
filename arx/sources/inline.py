@@ -20,6 +20,8 @@ class Inline(Source):
 class InlineText(Inline):
     @signature(str)
     def __init__(self, text):
+        if not stringsafe(text):
+            raise ValueError('Please use InlineBinary for non-ASCII text.')
         self.text = text
 
     @twopaths
@@ -170,3 +172,9 @@ def break_up_base64(data, n=64):
     while len(data) > 0:
         yield data[:n]
         data = data[n:]
+
+
+def stringsafe(data):
+    text_code_points = (set([0x07, 0x08, 0x09, 0x0a, 0x0c, 0x0d, 0x1b]) |
+                        set(range(0x20, 0x100)) - set([0x7f]))
+    return len(data.translate(None, bytearray(text_code_points))) == 0

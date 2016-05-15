@@ -2,7 +2,13 @@ import base64
 
 import six
 
-from ..inline import InlineBinary, InlineTarGZ
+from ..inline import InlineBinary, InlineTarGZ, stringsafe
+
+
+def test_stringsafe():
+    binary = base64.b64decode(small_tgz)
+    assert stringsafe(small_tgz)
+    assert not stringsafe(binary)
 
 
 def test_b64():
