@@ -13,8 +13,9 @@ from .core import onepath, Source, twopaths
 class Inline(Source):
     @onepath
     def cache(self, cache):
-        """Caching for inline sources is a no-op."""
-        pass
+        body = cache.join('data')
+        with open(body, 'w') as h:
+            h.write(self.data)
 
 
 class InlineText(Inline):
@@ -28,7 +29,7 @@ class InlineText(Inline):
     def place(self, cache, path):
         mkdir('-p', path.dirname)
         with open(str(path), 'w') as h:
-            h.write(self.text.strip() + '\n')
+            h.write(self.data)
 
     @onepath
     def run(self, cache, args=[]):
@@ -37,6 +38,10 @@ class InlineText(Inline):
         chmod('a+rx', str(f))
         cmd = Command(str(f))
         cmd(*args)
+
+    @property
+    def data(self):
+        return six.b(self.text.strip() + '\n')
 
     def externalize(self):
         return dict(text=self.text)
