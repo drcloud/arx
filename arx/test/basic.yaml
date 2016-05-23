@@ -1,7 +1,10 @@
 code:
-  - [wc, -l, brew.rb]
-  - [sh, -c, 'stat -x *']
+  - cmd: wc
+    args: [-l, brew.rb]
+  - cmd: sh
+    args: [-c, 'stat -x *']
 data:
-  - 'https://raw.githubusercontent.com/Homebrew/install/master/install':
-       brew.rb
-  - 'http://google.com': google-download
+  - source: 'https://raw.githubusercontent.com/Homebrew/install/master/install'
+    target: brew.rb
+  - source: 'http://google.com'
+    target: google-download
