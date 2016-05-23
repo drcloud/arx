@@ -17,6 +17,8 @@ class Source(object):
         raise NotImplementedError()
 
     def externalize(self):
+        """Provide a data representation in terms of simple data types:
+           strings, sequences and dictionaries."""
         raise NotImplementedError()
 
 
