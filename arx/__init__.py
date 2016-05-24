@@ -15,7 +15,9 @@ class Arx(namedtuple('Arx', 'interpreter')):
            the bundle.
         """
         with interpreter_injector.using(self.interpreter):   # NB: Evil globals
-            return Bundle(*args, **kwargs)
+            bundle = Bundle(*args, **kwargs)
+            bundle.validate()
+            return bundle
 
     def Source(self, *args, **kwargs):
         return self.interpreter(*args, **kwargs)
@@ -31,7 +33,9 @@ class Arx(namedtuple('Arx', 'interpreter')):
                 kwargs.update(source=self.Source(args[0]))
             kwargs.update(args=args[1:])
             args = []
-        return Code(*args, **kwargs)
+        code = Code(*args, **kwargs)
+        code.validate()
+        return code
 
     def Data(self, *args, **kwargs):
         """Generate a new Data object, translating URLs and other sources
@@ -43,7 +47,9 @@ class Arx(namedtuple('Arx', 'interpreter')):
         if len(args) > 0:
             kwargs.update(target=args[0])
             args = args[1:]
-        return Data(*args, **kwargs)
+        data = Data(*args, **kwargs)
+        data.validate()
+        return data
 
     def local(self, source, under=None):
         cached = source.cache(under)
