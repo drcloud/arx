@@ -11,11 +11,22 @@ from ..sources import interpreter
 
 
 class Model(schematics.models.Model):
-    class Options:
-        serialize_when_none = False
+    def __init__(self, *args, **kwargs):
+        for arg in args:
+            kwargs.update(**arg)
+        super(Model, self).__init__(kwargs)
+
+    def __repr__(self):
+        fields = ((k, self._data[k]) for k in self._fields.keys())
+        notnull = ((k, d) for k, d in fields if nonempty(d))
+        return '%s(%s)' % (type(self).__name__,
+                           ', '.join('%s=%r' % (k, d) for k, d in notnull))
 
     def to_primitive(self):
         return simplify(super(Model, self).to_primitive())
+
+    class Options:
+        serialize_when_none = False
 
 
 def simplify(item):
