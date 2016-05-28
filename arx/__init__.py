@@ -1,12 +1,15 @@
 from collections import namedtuple
-import pkg_resources
 
 import six
+from v2 import v2
 
 from .bundle import Bundle, Code, Data
 from .inner.schematics import interpreter_injector
 from .sources import interpreter
 from .sources.core import DiskLocal
+
+
+__version__ = v2.from_pkg().from_git().from_default().version
 
 
 class Arx(namedtuple('Arx', 'interpreter')):
@@ -61,18 +64,3 @@ class Arx(namedtuple('Arx', 'interpreter')):
 
 
 arx = Arx(interpreter.default)
-
-
-def version():
-    try:
-        return pkg_resources.get_distribution(__package__).version
-    except:
-        pass
-    try:
-        return pkg_resources.resource_string(__package__, 'VERSION').strip()
-    except:
-        pass
-    return '19991231'
-
-
-__version__ = version()
