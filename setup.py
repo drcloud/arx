@@ -1,8 +1,7 @@
 #!/usr/bin/env python
-
 from datetime import datetime
 import os
-from setuptools import setup
+from setuptools import find_packages, setup
 from subprocess import check_output, CalledProcessError
 
 
@@ -51,8 +50,7 @@ conf = dict(name='arx',
             setup_requires=['pytest-runner', 'setuptools'],
             tests_require=['flake8', 'pytest', 'tox'],
             description='Arx, a task manifest format.',
-            packages=['arx', 'arx.sources', 'arx.sources.test',
-                      'arx.test', 'arx.util'],
+            packages=find_packages(),
             package_data={'arx': ['VERSION'], 'arx.test': ['*.yaml']},
             entry_points={'console_scripts': ['arx = arx.__main__:main']},
             classifiers=['Environment :: Console',
