@@ -32,10 +32,16 @@ class Bundle(Ctx):
     data = ListType(ModelType(Data))
 
     def __iadd__(self, arg):
-        if isinstance(arg, Code):
-            self.code += [arg]
-            return self
-        if isinstance(arg, Data):
-            self.data += [arg]
-            return self
+        for cls, col in [(Code, self.code), (Data, self.data)]:
+            if isinstance(arg, cls):
+                col += [arg]
+                return self
         raise TypeError('Bundles can only append Code or Data instances.')
+
+    def __isub__(self, arg):
+        for cls, col in [(Code, self.code), (Data, self.data)]:
+            if isinstance(arg, cls):
+                for idx in [i for i, el in enumerate(col) if arg == el]:
+                    del col[idx]
+                return self
+        raise TypeError('Bundles can only remove Code or Data instances.')
