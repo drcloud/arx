@@ -42,8 +42,9 @@ be performed from the command line or through the Arx API.
 An Example
 ~~~~~~~~~~
 
-Consider the case where we'd like to launch a build with dynamic
-configuration. In Arx this looks like:
+Consider a from-source deployment of a web application. Maybe our application
+is hosted on GitHub, it's Nginx configuration is separatelym maintained, and it
+needs an internal secretes file. In Arx, it looks like this:
 
 .. code:: yaml
 
@@ -51,8 +52,8 @@ configuration. In Arx this looks like:
       - [sh, -c, 'service app stop ; service app start']
       - [sh, -c, 'service nginx stop ; service nginx start']
     data:
-      - /srv/app: tar+https://builds.internal.example.com/app/ab23dee5.tgz
-      - /etc/nginx: tar+https://builds.internal.example.com/nginx/20150802.tgz
+      - /srv/app: git+ssh://github.com/examplecom/app.git
+      - /etc/nginx: git+ssh://github.com/examplecom/sys.git#nginx
       - /etc/default/app: https://secrets.internal.example.com/generate/env
 
 Or:
@@ -64,15 +65,13 @@ Or:
     b = arx.Bundle(
         arx.Code('sh', '-c', 'service app stop ; service app start'),
         arx.Code('sh', '-c', 'service nginx stop ; service nginx start'),
-        arx.Data('tar+https://builds.internal.example.com/app/ab23dee5.tgz',
-                 '/srv/app'),
-        arx.Data('tar+https://builds.internal.example.com/nginx/20150802.tgz',
-                 '/etc/nginx'),
+        arx.Data('git+ssh://github.com/examplecom/app.git', '/srv/app'),
+        arx.Data('git+ssh://github.com/examplecom/sys.git#nginx', '/etc/nginx'),
         arx.Data('https://secrets.internal.example.com/generate/env',
                  '/etc/default/app'),
     )
 
-Calling ``arx.run(b)`` (or ``arx /path/to/arx.yaml``) will step through all
+Calling ``b.run()`` (or ``arx /path/to/arx.yaml``) will step through all
 the data, unpacking it to the specified locations, and then run the two
 commands specified with `~arx.bundle.Code` (or in YAML, ``code``).
 
