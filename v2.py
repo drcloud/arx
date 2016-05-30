@@ -115,7 +115,7 @@ def git_version():
     if distance is not None:
         branch = check_output(['git', 'rev-parse',
                                '--abbrev-ref', 'HEAD']).strip()
-        if branch != 'master':
+        if branch not in ['master', 'HEAD']:
             dotted += '+' + s(branch)
     return dotted
 
