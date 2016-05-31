@@ -1,0 +1,15 @@
+awscli
+boto3
+click
+enum34
+magiclog
+ptpython
+py
+pytz
+pyyaml
+schematics
+sh
+six
+tzlocal
+uritools
+v2
