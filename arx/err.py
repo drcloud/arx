@@ -5,5 +5,5 @@ class Err(Exception):
             self.cause = kwargs['cause']
             del kwargs['cause']
         else:
-            self.underlying = None
+            self.cause = None
         super(Err, self).__init__(*args, **kwargs)
