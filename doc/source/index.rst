@@ -71,10 +71,55 @@ Or:
                  '/etc/default/app'),
     )
 
-Calling ``b.run()`` (or ``arx /path/to/arx.yaml``) will step through all
+Calling ``arx.run(b)`` (or ``arx /path/to/arx.yaml``) will step through all
 the data, unpacking it to the specified locations, and then run the two
 commands specified with `~arx.bundle.Code` (or in YAML, ``code``).
 
+
+===============
+Convenience API
+===============
+
+``from arx import arx`` imports an :class:`~arx.Arx` API object [#api]_ that
+provides a few convenience methods for object creation.
+
+.. automethod:: arx.Arx.Bundle
+
+.. automethod:: arx.Arx.Code
+
+.. automethod:: arx.Arx.Data
+
+========
+Core API
+========
+
+The core API is composed of less convenient, but also less magical and more
+uniform, types and functions.
+
+.. autoclass:: arx.bundle.Bundle
+
+.. autoclass:: arx.bundle.Code
+
+.. autoclass:: arx.bundle.Data
+
+.. autofunction:: arx.sources.interpreter.default(str|dict) -> Source
+
+    The default interpreter provides the standard mapping.
+
+.. autoclass:: arx.sources.core.Source
+
+.. autoclass:: arx.err.Err
+
+==================
+APIs for Extension
+==================
+
+To customize how URLs are interpreted, how tasks are run and how logging is
+performed, you'll need these APIs.
+
+.. autoclass:: arx.Arx
+
+.. autoclass:: arx.sources.interpreter.Interpreter
 
 ==================
 Indices and tables
@@ -83,3 +128,8 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 
+
+.. rubric:: Footnotes
+
+.. [#api] It is possible to construct another such object, an :class:`arx.Arx`,
+          to customize how URLs are intepreted.

@@ -16,9 +16,6 @@ from .s3 import S3, S3Jar, S3Tar
 class Interpreter(object):
     """An interpreter translates strings and simple string dictionaries to
        sources.
-
-       The interpreter class is provided as a way to register handlers for
-       this purpose; but any callable can be an interpreter.
     """
     def __init__(self, uri_handlers=[], data_handlers=[]):
         self.uri_handlers = uri_handlers

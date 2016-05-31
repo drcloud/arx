@@ -1,5 +1,5 @@
 class Err(Exception):
-    """Base class for this package's exceptions."""
+    """Base class for custom exceptions in this package."""
     def __init__(self, *args, **kwargs):
         if 'cause' in kwargs:
             self.cause = kwargs['cause']
