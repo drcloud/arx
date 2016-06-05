@@ -104,11 +104,45 @@ uniform, types and functions.
 
 .. autofunction:: arx.sources.interpreter.default(str|dict) -> Source
 
-    The default interpreter provides the standard mapping.
+    The default interpreter provides the following mapping of URL types to
+    underlying source types:
+
+
+    +------------------------+------------------------------------+
+    | ``http://...``         | :class:`~arx.sources.http.HTTP`    |
+    +------------------------+                                    |
+    | ``https://...``        |                                    |
+    +------------------------+------------------------------------+
+    | ``tar+http://...``     | :class:`~arx.sources.http.HTTPTar` |
+    +------------------------+                                    |
+    | ``tar+https://...``    |                                    |
+    +------------------------+------------------------------------+
+    | ``s3://...``           | :class:`~arx.sources.s3.S3`        |
+    +------------------------+------------------------------------+
+    | ``tar+s3://...``       | :class:`~arx.sources.s3.S3Tar`     |
+    +------------------------+------------------------------------+
 
 .. autoclass:: arx.sources.core.Source
 
 .. autoclass:: arx.err.Err
+
+=======
+Sources
+=======
+
+.. autoclass:: arx.sources.http.HTTP
+
+.. autoclass:: arx.sources.http.HTTPTar
+
+.. autoclass:: arx.sources.s3.S3
+
+.. autoclass:: arx.sources.s3.S3Tar
+
+~~~~~~~~~~~~~
+Source Mixins
+~~~~~~~~~~~~~
+
+.. autoclass:: arx.sources.tar.Tar
 
 ==================
 APIs for Extension

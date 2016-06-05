@@ -11,6 +11,12 @@ from .tar import Tar
 
 
 class S3(SignableURL):
+    """Links objects in S3.
+
+    The URL can end with a ``/`` to give it archive nature; otherwise it has
+    file nature. With archive nature, the directory is unpacked recursively.
+    """
+
     @oneurl
     @schemes('s3')
     def __init__(self, url):
@@ -70,6 +76,14 @@ class S3(SignableURL):
 
 
 class S3Tar(Tar, S3):
+    """Links to tar archives available over S3.
+
+    Note that these URLs may not end with a slash.
+
+    These URLs have archive nature unless a fragment is passed, as described
+    under :class:`~arx.sources.tar.Tar`.
+    """
+
     @oneurl
     @schemes('tar+s3')
     def __init__(self, url):

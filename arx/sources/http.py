@@ -9,6 +9,12 @@ from .tar import Tar
 
 
 class HTTP(SourceURL):
+    """Links to files available over HTTP/S.
+
+    The URL can contain query parameters (``?...``) but not a fragment
+    (``#...``). All HTTP URLs are treated as having file nature.
+    """
+
     @oneurl
     @schemes('http', 'https')
     def __init__(self, url):
@@ -45,6 +51,12 @@ class HTTP(SourceURL):
 
 
 class HTTPTar(Tar, HTTP):
+    """Links to tar archives available over HTTP/S.
+
+    These URLs have archive nature unless a fragment is passed, as described
+    under :class:`~arx.sources.tar.Tar`.
+    """
+
     @oneurl
     @schemes('tar+http', 'tar+https')
     def __init__(self, url):
