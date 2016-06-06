@@ -31,7 +31,7 @@ A :class:`~arx.bundle.Bundle` is built from :class:`~arx.bundle.Code`\s and
 :class:`~arx.bundle.Data`\s, which themselves reference
 :class:`~arx.sources.core.Source`\s. A :class:`~arx.sources.core.Source` can
 reference local files, inline data or a URL. Sources can have *file* or
-*archive* nature: a Git repository has an archive nature while a direct HTTP
+*archive* nature: a Git repository has an directory nature while a direct HTTP
 reference has a file nature.
 
 The Arx API provides for flexible reading and writing of bundles and direct,

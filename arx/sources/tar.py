@@ -7,7 +7,7 @@ from .core import twopaths, onepath
 class Tar(object):
     """
     With ``tar+...`` type URLs, passing fragment can give the source file
-    nature; but by default it has archive nature.
+    nature; but by default it has directory nature.
 
     A fragment can reference a subdirectory or a particular file in the
     archive; in the latter case, the URL can be treated as a runnable program.

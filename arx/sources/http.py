@@ -53,7 +53,7 @@ class HTTP(SourceURL):
 class HTTPTar(Tar, HTTP):
     """Links to tar archives available over HTTP/S.
 
-    These URLs have archive nature unless a fragment is passed, as described
+    These URLs have directory nature unless a fragment is passed, as described
     under :class:`~arx.sources.tar.Tar`.
     """
 
