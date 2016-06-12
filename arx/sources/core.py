@@ -47,9 +47,7 @@ class Source(object):
 
 class DiskLocal(Source):
     """Sources that are on local disk."""
-    def delocalize(self):
-        """Returns a new, non-local ``Source``."""
-        raise NotImplementedError()
+    pass
 
 
 class SourceURL(Source):
