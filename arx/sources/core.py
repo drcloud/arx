@@ -63,6 +63,10 @@ class SourceURL(Source):
     def externalize(self):
         return uritools.uriunsplit(self.url)
 
+    def dataname(self, cache):
+        """Default name for data stored in the cache."""
+        return cache.join('data')
+
 
 class SignableURL(SourceURL):
     """URLs that can be signed to allow privileged access without granting
