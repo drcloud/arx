@@ -14,7 +14,8 @@ and (even) ``curl ... | sh``.
 
 .. _Dockerfiles: https://docs.docker.com/engine/reference/builder/
 
-.. _Cloud Config: http://cloudinit.readthedocs.io/en/latest/topics/examples.html
+.. _Cloud Config:
+    http://cloudinit.readthedocs.io/en/latest/topics/examples.html
 
 
 Arx is built around four core data types:
@@ -108,19 +109,29 @@ uniform, types and functions.
     underlying source types:
 
 
-    +------------------------+------------------------------------+
-    | ``http://...``         | :class:`~arx.sources.http.HTTP`    |
-    +------------------------+                                    |
-    | ``https://...``        |                                    |
-    +------------------------+------------------------------------+
-    | ``tar+http://...``     | :class:`~arx.sources.http.HTTPTar` |
-    +------------------------+                                    |
-    | ``tar+https://...``    |                                    |
-    +------------------------+------------------------------------+
-    | ``s3://...``           | :class:`~arx.sources.s3.S3`        |
-    +------------------------+------------------------------------+
-    | ``tar+s3://...``       | :class:`~arx.sources.s3.S3Tar`     |
-    +------------------------+------------------------------------+
+    +------------------------+-------------------------------------+
+    | ``file://...``         | :class:`~arx.sources.files.File`    |
+    +------------------------+-------------------------------------+
+    | ``tar+file://...``     | :class:`~arx.sources.files.FileTar` |
+    +------------------------+-------------------------------------+
+    | ``git+ssh://...``      | :class:`~arx.sources.git.Git`       |
+    +------------------------+                                     |
+    | ``git+http://...``     |                                     |
+    +------------------------+                                     |
+    | ``git+file://...``     |                                     |
+    +------------------------+-------------------------------------+
+    | ``http://...``         | :class:`~arx.sources.http.HTTP`     |
+    +------------------------+                                     |
+    | ``https://...``        |                                     |
+    +------------------------+-------------------------------------+
+    | ``tar+http://...``     | :class:`~arx.sources.http.HTTPTar`  |
+    +------------------------+                                     |
+    | ``tar+https://...``    |                                     |
+    +------------------------+-------------------------------------+
+    | ``s3://...``           | :class:`~arx.sources.s3.S3`         |
+    +------------------------+-------------------------------------+
+    | ``tar+s3://...``       | :class:`~arx.sources.s3.S3Tar`      |
+    +------------------------+-------------------------------------+
 
 .. autoclass:: arx.sources.core.Source
 
@@ -129,6 +140,12 @@ uniform, types and functions.
 =======
 Sources
 =======
+
+.. autoclass:: arx.sources.files.File
+
+.. autoclass:: arx.sources.files.FileTar
+
+.. autoclass:: arx.sources.git.Git
 
 .. autoclass:: arx.sources.http.HTTP
 
@@ -154,6 +171,10 @@ performed, you'll need these APIs.
 .. autoclass:: arx.Arx
 
 .. autoclass:: arx.sources.interpreter.Interpreter
+
+.. autoclass:: arx.sources.core.Source
+
+    .. automethod:: arx.sources.core.Source.cache
 
 ==================
 Indices and tables
