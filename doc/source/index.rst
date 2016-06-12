@@ -174,7 +174,7 @@ performed, you'll need these APIs.
 
 .. autoclass:: arx.sources.core.Source
 
-    .. automethod:: arx.sources.core.Source.cache
+    .. automethod:: arx.sources.core.Source.cache(path) -> File
 
 ==================
 Indices and tables
