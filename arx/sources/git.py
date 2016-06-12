@@ -1,5 +1,5 @@
-from sh import Command, chmod, cp, curl, mkdir
-import uritools
+# from sh import Command, chmod, cp, curl, mkdir
+# import uritools
 
 from ..decorators import schemes
 from .core import onepath, oneurl, SourceURL, twopaths

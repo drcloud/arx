@@ -1,8 +1,8 @@
 import os
 
-from magiclog import log
+# from magiclog import log
 import py.path
-from sh import chmod, Command, mkdir
+from sh import chmod, Command   # , mkdir
 
 from ..decorators import schemes
 from ..err import Err
@@ -111,7 +111,7 @@ def handle_at_sign(path):
     return None
 
 
-def cp(src, dst):
+def copy(src, dst):
     # If src is a dir, do x
     # If src is not, do y
     pass
