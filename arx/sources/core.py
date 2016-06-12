@@ -8,6 +8,24 @@ from ..inner.uritools import uridisplay
 class Source(object):
     """ABC for sources."""
     def cache(self, cache):
+        """Generates a filesystem local source from this source.
+
+        The :class:`~arx.sources.files.File` thus returned can be used in place
+        of the original source.
+
+        The method is passed a created, temporary directory which is cleared
+        by the implementation. The :class:`~arx.sources.files.File` source
+        should be stored somewhere under this directory, but it is allowed to
+        store metadata, like checksums, alongside it.
+
+        It is advisable that this method reuse data when it is already present
+        in the cache; but this is not a requirement. An implementation that
+        clears the cache and pulls the data anew each time will not break
+        clients.
+
+        For :class:`~arx.sources.files.File` and its subclasses, ``cache``
+        returns ``self``.
+        """
         raise NotImplementedError()
 
     def place(self, cache, path):
@@ -17,8 +35,13 @@ class Source(object):
         raise NotImplementedError()
 
     def externalize(self):
-        """Provide a data representation in terms of simple data types:
-           strings, sequences and dictionaries."""
+        """Provide a representation of a source in terms of simple data types:
+           strings, lists and dictionaries.
+
+        For most sources, this will be a string representing a URL. For
+        :class:`arx.sources.inline.Inline` sources, this will be a dictionary
+        with one K/V pair, where both K and V are strings.
+        """
         raise NotImplementedError()
 
 
