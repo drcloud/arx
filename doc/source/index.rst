@@ -39,6 +39,32 @@ The Arx API provides for flexible reading and writing of bundles and direct,
 programmatic construction thereof. Running, repacking and auditing bundles can
 be performed from the command line or through the Arx API.
 
+The following URL schemes are supported as :class:`~arx.sources.core.Source`\s:
+
+    +------------------------+-------------------------------------+
+    | ``file://...``         | :class:`~arx.sources.files.File`    |
+    +------------------------+-------------------------------------+
+    | ``tar+file://...``     | :class:`~arx.sources.files.FileTar` |
+    +------------------------+-------------------------------------+
+    | ``git+ssh://...``      | :class:`~arx.sources.git.Git`       |
+    +------------------------+                                     |
+    | ``git+http://...``     |                                     |
+    +------------------------+                                     |
+    | ``git+file://...``     |                                     |
+    +------------------------+-------------------------------------+
+    | ``http://...``         | :class:`~arx.sources.http.HTTP`     |
+    +------------------------+                                     |
+    | ``https://...``        |                                     |
+    +------------------------+-------------------------------------+
+    | ``tar+http://...``     | :class:`~arx.sources.http.HTTPTar`  |
+    +------------------------+                                     |
+    | ``tar+https://...``    |                                     |
+    +------------------------+-------------------------------------+
+    | ``s3://...``           | :class:`~arx.sources.s3.S3`         |
+    +------------------------+-------------------------------------+
+    | ``tar+s3://...``       | :class:`~arx.sources.s3.S3Tar`      |
+    +------------------------+-------------------------------------+
+
 ~~~~~~~~~~
 An Example
 ~~~~~~~~~~
@@ -90,6 +116,7 @@ provides a few convenience methods for object creation.
 
 .. automethod:: arx.Arx.Data
 
+
 ========
 Core API
 ========
@@ -103,37 +130,9 @@ uniform, types and functions.
 
 .. autoclass:: arx.bundle.Data
 
-.. autofunction:: arx.sources.interpreter.default(str|dict) -> Source
-
-    The default interpreter provides the following mapping of URL types to
-    underlying source types:
-
-
-    +------------------------+-------------------------------------+
-    | ``file://...``         | :class:`~arx.sources.files.File`    |
-    +------------------------+-------------------------------------+
-    | ``tar+file://...``     | :class:`~arx.sources.files.FileTar` |
-    +------------------------+-------------------------------------+
-    | ``git+ssh://...``      | :class:`~arx.sources.git.Git`       |
-    +------------------------+                                     |
-    | ``git+http://...``     |                                     |
-    +------------------------+                                     |
-    | ``git+file://...``     |                                     |
-    +------------------------+-------------------------------------+
-    | ``http://...``         | :class:`~arx.sources.http.HTTP`     |
-    +------------------------+                                     |
-    | ``https://...``        |                                     |
-    +------------------------+-------------------------------------+
-    | ``tar+http://...``     | :class:`~arx.sources.http.HTTPTar`  |
-    +------------------------+                                     |
-    | ``tar+https://...``    |                                     |
-    +------------------------+-------------------------------------+
-    | ``s3://...``           | :class:`~arx.sources.s3.S3`         |
-    +------------------------+-------------------------------------+
-    | ``tar+s3://...``       | :class:`~arx.sources.s3.S3Tar`      |
-    +------------------------+-------------------------------------+
-
 .. autoclass:: arx.sources.core.Source
+
+    .. automethod:: arx.sources.core.Source.cache(path) -> File
 
 .. autoclass:: arx.err.Err
 
@@ -172,9 +171,9 @@ performed, you'll need these APIs.
 
 .. autoclass:: arx.sources.interpreter.Interpreter
 
-.. autoclass:: arx.sources.core.Source
+.. autofunction:: arx.sources.interpreter.default(str|dict) -> Source
 
-    .. automethod:: arx.sources.core.Source.cache(path) -> File
+    Provides the default mapping of source specs to classes.
 
 ==================
 Indices and tables
