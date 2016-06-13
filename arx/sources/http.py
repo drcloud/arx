@@ -1,8 +1,9 @@
-from sh import Command, chmod, cp, curl, mkdir
+from sh import Command, chmod, curl, mkdir
 import uritools
 
 from ..decorators import schemes
 from ..err import Err
+from .files import File, FileTar
 from .jar import Jar
 from .core import onepath, oneurl, SourceURL, twopaths
 from .tar import Tar
@@ -23,31 +24,36 @@ class HTTP(SourceURL):
             raise Invalid('Arx can not work with plain HTTP/S URLs that have '
                           'fragments.')
 
-    @onepath
-    def cache(self, cache):
-        headers, body = cache.join('headers'), self.data(cache)
+    @property
+    def base(self):
         # Allows subclasses to inherit this implementation by throwing away the
         # prefix.
         scheme = self.url.scheme.split('+')[-1]
-        simplified_url = self.url._replace(scheme=scheme, fragment=None)
-        curl('-sSfL', uritools.uriunsplit(simplified_url),
-             '-D', str(headers), '-o', str(body))
+        return self.url._replace(scheme=scheme, fragment=None)
+
+    @twopaths
+    def retrieve(self, headers, path):
+        # TODO: If `curl` is not present, use urllib.
+        curl('-sSfL', uritools.uriunsplit(self.base),
+             '-D', str(headers), '-o', str(path))
+
+    @onepath
+    def cache(self, cache):
+        headers, body = cache.join('headers'), self.dataname(cache)
+        self.retrieve(headers, body)
+        return File('file:///' + str(body))
 
     @twopaths
     def place(self, cache, path):
         mkdir('-p', path.dirname)
-        cp(str(self.data(cache)), str(path))
+        self.retrieve('/dev/null', path)
 
     @onepath
     def run(self, cache, args=[]):
-        body = self.data(cache)
+        body = self.dataname(cache)
         chmod('a+rx', str(body))
         cmd = Command(str(body))
         cmd(*args)
-
-    @onepath
-    def data(self, cache):
-        return cache.join('data')
 
 
 class HTTPTar(Tar, HTTP):
@@ -61,6 +67,12 @@ class HTTPTar(Tar, HTTP):
     @schemes('tar+http', 'tar+https')
     def __init__(self, url):
         self.url = url
+
+    @onepath
+    def cache(self, cache):
+        # Reuses parent and then rewrites URL.
+        as_file = super(HTTPTar, self).cache(cache)
+        return FileTar.resolve(as_file.resolved)
 
 
 class HTTPJar(Jar, HTTP):

@@ -23,14 +23,18 @@ class Tar(object):
 
     @twopaths
     def place(self, cache, path):
-        data = self.data(cache)
+        data = self.cache(cache)
         opts = []
 
         if self.url.fragment is not None:
             slashes = self.url.fragment.count('/')
-            n = slashes - 1 if self.url.fragment.endswith('/') else slashes
-            if n > 0:
-                opts += ['--strip-components', str(n)]
+            # If the fragment is `a/b/d/`, then we get three slashes and pass
+            # three to `--strip-components`. The effect is similar to using
+            # `rsync` or `cp -a` with trailing slashes.
+            if slashes > 0:
+                opts += ['--strip-components', str(slashes)]
+            # Append fragment to arguments list, so only this file/dir is
+            # extracted.
             opts += ['--', self.url.fragment]
 
         mkdir('-p', path.dirname)
@@ -41,17 +45,17 @@ class Tar(object):
 
     @onepath
     def run(self, cache, args=[]):
-        program = cache.join('program')
         if self.url.fragment is None:
             raise Invalid('Arx can not execute tarball URLs that have no '
                           'fragment.')
+        program = cache.join('program', self.url.fragment.split('/')[-1])
         self.place(cache, program)
         chmod('a+rx', str(program))
         cmd = Command(str(program))
         cmd(*args)
 
     @onepath
-    def data(self, cache):
+    def dataname(self, cache):
         return cache.join('data.tar')
 
 

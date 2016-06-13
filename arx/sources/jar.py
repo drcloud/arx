@@ -12,8 +12,8 @@ class Jar(object):
     @onepath
     def run(self, cache, args=[]):
         cmd = Command('java')
-        cmd('-jar', str(self.data(cache)), *args)
+        cmd('-jar', str(self.dataname(cache)), *args)
 
     @onepath
-    def data(self, cache):
+    def dataname(self, cache):
         return cache.join('data.jar')

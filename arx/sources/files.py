@@ -1,8 +1,9 @@
 import os
 
-# from magiclog import log
+from magiclog import log
 import py.path
-from sh import chmod, Command   # , mkdir
+from sh import chmod, Command, cp, mkdir
+import uritools
 
 from ..decorators import schemes
 from ..err import Err
@@ -40,13 +41,21 @@ class File(DiskLocal, SourceURL):
     @oneurl
     @schemes('file')
     def __init__(self, url):
-        self.url = url
         if url.authority != '':
             raise Invalid('Arx can not work with non-local file URLs.')
-        self.resolved = py.path.local(handle_at_sign(url.path) or url.path)
         if url.fragment is not None:
             raise Invalid('Arx can not work with plain file URLs that have '
                           'fragments.')
+        self.url = url
+        self.resolved = py.path.local(handle_at_sign(url.path) or url.path)
+
+    @classmethod
+    def resolve(cls, ref):
+        return cls(fileref(ref))
+
+    @property
+    def dirlike(self):
+        return self.url.path.endswith('/')
 
     @property
     def home(self):
@@ -60,18 +69,24 @@ class File(DiskLocal, SourceURL):
 
     @onepath
     def cache(self, cache):
-        copy(self.resolved, cache.join('data'))
+        return self
 
     @twopaths
     def place(self, cache, path):
-        copy(self.resolved, path)
+        mkdir('-p', path.dirname)
+        src = str(self.resolved) + '/' if self.dirlike else str(self.resolved)
+        cp('-a', src, str(path))
 
     @onepath
     def run(self, cache, args=[]):
         if not True:
             raise Invalid('Directories can not be run as commands.')
-        if self.dot:
-            chmod('a+rx', str(self.resolved))
+        if not os.access(str(self.resolved), os.X_OK):
+            if self.dot:
+                chmod('a+rx', str(self.resolved))
+            else:
+                log.error('Not able to mark `%s` as executable :/' %
+                          self.resolved)
         cmd = Command(str(self.resolved))
         cmd(*args)
 
@@ -82,9 +97,26 @@ class FileTar(Tar, File):
     def __init__(self, url):
         self.url = url
 
+    @classmethod
+    def resolve(cls, ref):
+        return cls(fileref(ref, pfx='tar+file:///'))
+
 
 class Invalid(Err):
     pass
+
+
+def fileref(path_or_handle_or_url, pfx='file:///'):
+    # No-op on URLs.
+    if isinstance(path_or_handle_or_url, uritools.SplitResult):
+        return path_or_handle_or_url
+    # Existing path objects become URLs.
+    if isinstance(path_or_handle_or_url, py.path.local):
+        return uritools.urisplit(pfx + str(path_or_handle_or_url))
+    # Open handles get a name lookup.
+    if hasattr(path_or_handle_or_url, 'name'):
+        return uritools.urisplit(pfx + path_or_handle_or_url.name)
+    return uritools.urisplit(pfx + path_or_handle_or_url)     # Maybe a string?
 
 
 def relative(path):
@@ -109,9 +141,3 @@ def handle_at_sign(path):
             return os.path.abspath(full)
         raise Invalid('Please `/@/` only with `.`, `..` or `~`.')
     return None
-
-
-def copy(src, dst):
-    # If src is a dir, do x
-    # If src is not, do y
-    pass
