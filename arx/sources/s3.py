@@ -1,5 +1,5 @@
 import boto3
-from sh import Command, chmod, cp, mkdir, rsync
+from sh import Command, chmod, cp, mkdir, rsync, ErrorReturnCode
 import uritools
 
 from ..decorators import schemes
@@ -118,3 +118,12 @@ class S3Jar(Jar, S3):
 
 class Invalid(Err):
     pass
+
+
+def no_credentials():
+    aws = Command('aws')
+    try:
+        aws('sts', 'get-caller-identity')
+        return False
+    except ErrorReturnCode:
+        return True

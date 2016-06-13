@@ -2,10 +2,14 @@ import pytest
 
 from ...decorators import InvalidScheme
 from ..http import HTTP, HTTPJar, HTTPTar
-from ..s3 import S3, S3Jar, S3Tar, Invalid
+from ..s3 import no_credentials, S3, S3Jar, S3Tar, Invalid
 
 
-def test_http():
+skip = pytest.mark.skipif(no_credentials, reason='No AWS tokens can be found.')
+
+
+@skip
+def test_s3():
     src = S3('s3://bucket/key')
     assert src.authority == 'bucket'
     assert src.path == '/key'
@@ -23,6 +27,7 @@ def test_http():
         src = S3('jar+s3://bucket/key')
 
 
+@skip
 def test_tar():
     src = S3Tar('tar+s3://bucket/key.tbz')
     assert src.scheme == 'tar+s3'
@@ -35,6 +40,7 @@ def test_tar():
         src = S3Tar('https://aol.com/aol.tgz')
 
 
+@skip
 def test_jar():
     src = S3Jar('jar+s3://bucket/key.jar')
     assert src.scheme == 'jar+s3'
